@@ -101,7 +101,7 @@ def instr_name(key):
 st.subheader("Project profile")
 st.caption("Fill in the five fields (plus the optional ASCEND city) and press **Run matching**.")
 
-with st.form("profile_form"):
+with st.container(border=True):
     c1, c2 = st.columns(2)
     with c1:
         tipo_l = st.selectbox("1. What do you want to do?", labels(E.TIPO_OPTS))
@@ -118,22 +118,28 @@ with st.form("profile_form"):
             "6. ASCEND city (optional)", labels(E.CITTA_OPTS),
             help="If you select an ASCEND city, its own Solution Packages are not shown as comparable cases.",
         )
-    submitted = st.form_submit_button("Run matching", type="primary", width="stretch")
+    submitted = st.button("Run matching", type="primary", width="stretch")
+
+# Profile currently shown in the form
+current = dict(
+    tipo=code_of(E.TIPO_OPTS, tipo_l), tipo_label=tipo_l,
+    paese=code_of(E.PAESE_OPTS, paese_l), paese_label=paese_l,
+    prom=code_of(E.PROM_OPTS, prom_l), prom_label=prom_l,
+    fase=code_of(E.FASE_OPTS, fase_l), fase_label=fase_l,
+    citta=code_of(E.CITTA_OPTS, citta_l), citta_label=citta_l,
+    imp_m=to_million(amount, unit), imp_label=f"{amount:,.1f} {unit}",
+)
 
 if submitted:
     if amount <= 0:
         st.error("Please enter an investment amount greater than zero.")
         st.stop()
-    st.session_state["asc_profile"] = dict(
-        tipo=code_of(E.TIPO_OPTS, tipo_l), tipo_label=tipo_l,
-        paese=code_of(E.PAESE_OPTS, paese_l), paese_label=paese_l,
-        prom=code_of(E.PROM_OPTS, prom_l), prom_label=prom_l,
-        fase=code_of(E.FASE_OPTS, fase_l), fase_label=fase_l,
-        citta=code_of(E.CITTA_OPTS, citta_l), citta_label=citta_l,
-        imp_m=to_million(amount, unit), imp_label=f"{amount:,.1f} {unit}",
-    )
+    st.session_state["asc_profile"] = current
 
-prof = st.session_state.get("asc_profile")
+# Results are shown only for the profile of the last "Run matching".
+# If the user changes any field afterwards, old results are hidden until the next run.
+last = st.session_state.get("asc_profile")
+prof = last if last == current else None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # RESULTS
@@ -249,6 +255,8 @@ if prof:
             )
         else:
             st.info("No closely matching projects found in the knowledge base for this profile.")
+elif last:
+    st.info("You changed the project profile. Press **Run matching** to update the results.")
 else:
     st.info("Fill in the project profile above and press **Run matching** to see the results.")
 
