@@ -46,11 +46,6 @@ st.markdown(
       .asc-why {{ font-size:0.9rem; color:#2D3748; background:#fff; padding:8px 10px; border-radius:6px; }}
       .asc-meta {{ font-size:0.82rem; color:#4A5568; margin-top:6px; }}
       .asc-box {{ border-left:6px solid {BLUE}; background:#E8F2FA; padding:12px 16px; border-radius:6px; color:#2D3748; }}
-      div[data-testid="stFormSubmitButton"] button, button[kind="primary"], button[kind="primaryFormSubmit"] {{
-          background:{BLUE} !important; border-color:{BLUE} !important; color:#fff !important; }}
-      div[data-testid="stFormSubmitButton"] button:hover {{ background:#155A87 !important; }}
-      [data-testid="stTab"][aria-selected="true"] p {{ color:{BLUE} !important; }}
-      [data-testid="stTab"] .react-aria-SelectionIndicator {{ background-color:{BLUE} !important; }}
       .asc-disc {{ font-size:0.75rem; color:#4A5568; background:#F4F5F7; padding:10px 14px; border-radius:6px; }}
     </style>
     <div class="asc-header">
@@ -85,7 +80,7 @@ def similarity_column():
     """Progress bar in ASCEND blue (colour argument only exists in recent Streamlit versions)."""
     try:
         return st.column_config.ProgressColumn(
-            "Similarity", min_value=0, max_value=100, format="%d%%", color=BLUE)
+            "Similarity", min_value=0, max_value=100, format="%d%%")
     except TypeError:
         return st.column_config.ProgressColumn(
             "Similarity", min_value=0, max_value=100, format="%d%%")
